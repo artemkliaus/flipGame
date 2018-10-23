@@ -4,7 +4,7 @@
   "description": "card game for test issue",
   "scripts": {
     "start": "parcel index.html",
-    "build": "parcel build index.js"
+    "build": "parcel build ./index.html"
   },
   "repository": {
     "type": "git",

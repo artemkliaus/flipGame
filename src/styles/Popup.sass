@@ -9,6 +9,7 @@
     transform: translate(-50%, -50%)
     background-size: cover
     background-repeat: no-repeat
+    margin: 5px 0
 
     &__inner
         margin-top: 100px
@@ -68,3 +69,19 @@
     &_rules &_rules-text
             opacity: 1
             transition: opacity .5s linear
+
+@media (max-width: 650px)
+    .popup
+        width: 102%
+        height: 102%
+
+        &__result
+            width: 90%
+            height: 150px
+
+            &-text
+                padding: 10px
+                font-size: 21px
+
+        &_hide
+            left: -52%

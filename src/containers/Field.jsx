@@ -1,5 +1,7 @@
-import React, { Component } from 'react'
-import '../styles/Field.sass'
+import React, { Component } from 'react';
+import '../styles/Field.sass';
+import { connect } from 'react-redux';
+import { setMoves, setDisplayMoves, setCardsList, setFoundCards } from '../actions/FieldActions';
 
 //Components
 import Card from '../components/Card';
@@ -21,21 +23,7 @@ class Field extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            cardSymbols: [
-                {src: artuhov, id: 0},
-                {src: azarov, id: 1},
-                {src: burkov, id: 2},
-                {src: civilev, id: 3},
-                {src: moor, id: 4},
-                {src: nikitin, id: 5},
-                {src: nikolaev, id: 6},
-                {src: nosov, id: 7}
-            ],
-            moves: 0,
-            displayMoves: 0,
-            cardsList: null,
             prevCard: null,
-            findedCards: 0
         }
 
         this.styles = {
@@ -45,7 +33,7 @@ class Field extends Component {
     }
 
     clickHandler (e) {
-        const moves = this.state.moves;
+        const moves = this.props.field.moves;
         const card = e.currentTarget;
         let success;
 
@@ -59,21 +47,19 @@ class Field extends Component {
 
         if (success) {
             this.hideCards(card);
-            this.findedCards();
+            this.foundCards();
         }
     }
 
     updateMoves (moves) {
-        let displayMoves = this.state.displayMoves;
+        let displayMoves = this.props.field.displayMoves;
+        moves += 1;
 
-        this.setState({
-            moves: ++moves
-        });
+        this.props.setMoves(moves);
 
         if (moves % 2 === 0) {
-            this.setState({
-                displayMoves: ++displayMoves
-            });
+            displayMoves += 1;
+            this.props.setDisplayMoves(displayMoves);
         }
     }
 
@@ -95,20 +81,17 @@ class Field extends Component {
         return true;
     }
 
-    findedCards () {
-        let findedCards = this.state.findedCards;
-        findedCards += 1;
-        this.setState({
-            findedCards
-        }, this.checkEndGame);
-        return findedCards;
+    foundCards () {
+        let { foundCards } = this.props.field;
+        foundCards += 1;
+        this.props.setFoundCards(foundCards);
+        this.checkEndGame(foundCards);
+        return foundCards;
     }
 
-    checkEndGame () {
-        const displayMoves = this.state.displayMoves;
-        const findedCards = this.state.findedCards;
-
-        if (findedCards === 8) {
+    checkEndGame (foundCards) {
+        const { displayMoves } = this.props.field;
+        if (foundCards === 8) {
             this.showPopup(displayMoves);
             return true;
         }
@@ -147,21 +130,36 @@ class Field extends Component {
     }
 
     componentDidMount () {
-        const cardsListFirstPart = this.state.cardSymbols.map(card => this.prepareCard(card, 0));
-        const cardsListSecondPart = this.state.cardSymbols.map(card => this.prepareCard(card, 1));
+        const cardsListFirstPart = this.props.field.cardSymbols.map(card => this.prepareCard(card, 0));
+        const cardsListSecondPart = this.props.field.cardSymbols.map(card => this.prepareCard(card, 1));
         const cardsList = [...cardsListFirstPart, ...cardsListSecondPart].sort(this.randomazeArr);
 
-        this.setState({cardsList})
+        this.props.setCardsList(cardsList)
     }
 
     render () {
         return (
             <div className='field'>
-                <Counter moves={this.state.displayMoves}/>
-                {this.state.cardsList}
+                <Counter moves={this.props.field.displayMoves}/>
+                {this.props.field.cardsList}
             </div>
         );
     }
 }
 
-export default Field;
+const mapStateToProps = store => {
+    return {
+        field: store.field
+    }
+}
+
+const mapDispatchToProps = dispatch => {
+    return {
+        setMoves: moves => dispatch(setMoves(moves)),
+        setDisplayMoves: displayMoves => dispatch(setDisplayMoves(displayMoves)),
+        setCardsList: cardsList => dispatch(setCardsList(cardsList)),
+        setFoundCards: foundCards => dispatch(setFoundCards(foundCards))
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Field)

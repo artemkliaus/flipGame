@@ -1,11 +1,11 @@
 import React from 'react';
 import '../styles/Counter.sass';
 
-function Counter (props) {
+function Counter ({ moves }) {
 
     return (
             <div className='counter' >
-                Счетчик ходов: {props.moves}
+                Счетчик ходов: {moves}
             </div>
     )
 }

@@ -8,6 +8,13 @@ import nikitin from '../img/s_nikitin.jpeg';
 import nikolaev from '../img/s_nikolaev.jpeg';
 import nosov from '../img/s_nosov.jpeg';
 
+import { SET_MOVES,
+         SET_DISPLAY_MOVES,
+         SET_CARDS_LIST,
+         SET_FOUND_CARDS,
+         SET_PREV_CARD
+} from '../actions/constants';
+
 const initialState = {
     cardSymbols: [
         {src: artuhov, id: 0},
@@ -28,15 +35,15 @@ const initialState = {
 
 export const fieldReducer = ( state = initialState, action = {}) => {
     switch (action.type) {
-        case 'SET_MOVES':
+        case SET_MOVES:
             return {...state, moves: action.payload};
-        case 'SET_DISPLAY_MOVES':
+        case SET_DISPLAY_MOVES:
             return {...state, displayMoves: action.payload};
-        case 'SET_CARDS_LIST':
+        case SET_CARDS_LIST:
             return {...state, cardsList: action.payload};
-        case 'SET_FOUND_CARDS':
+        case SET_FOUND_CARDS:
             return {...state, foundCards: action.payload};
-        case 'SET_PREV_CARD':
+        case SET_PREV_CARD:
             return {...state, prevCard: action.payload};
         default:
             return state;

@@ -2,7 +2,7 @@ import React from 'react';
 import '../styles/Card.sass';
 import cardPic from '../img/card.png';
 
-function Card ({ id, card, onClick }) {
+const Card = ({ id, card, onClick }) => {
     return (
         <div className='card' id={id} onClick={(e) => onClick(e)}>
             <div className='card__inner'>
@@ -15,6 +15,6 @@ function Card ({ id, card, onClick }) {
             </div>
         </div>
     )
-}
+};
 
 export default Card;

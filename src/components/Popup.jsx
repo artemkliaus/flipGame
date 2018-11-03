@@ -1,9 +1,10 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import back from '../img/popup_back.png';
 import '../styles/Popup.sass';
 
-function Popup ({ view, popupHandler, result }) {
+const Popup = ({ view = 'start', popupHandler, result = null}) => {
 
     const divStyle = {
       backgroundImage: 'url(' + back + ')'
@@ -33,6 +34,11 @@ function Popup ({ view, popupHandler, result }) {
         </div>;
 
     return (template);
-}
+};
+
+Popup.propTypes = {
+    view: PropTypes.string,
+    popupHandler: PropTypes.func,
+};
 
 export default Popup;

@@ -20,7 +20,6 @@ class App extends Component {
 
     popupHandler (e) {
         const button = e.target.id;
-        console.log(button);
 
         if (button === 'start') {
             this.props.setPopupView('hide')
@@ -29,10 +28,6 @@ class App extends Component {
         if (button === 'rules') {
             this.props.setPopupView('rules')
         }
-    }
-
-    componentDidMount () {
-        console.log(this.props.store);
     }
 
     render() {
@@ -47,7 +42,6 @@ class App extends Component {
 }
 
 const mapStateToProps = store => {
-
     return {
         app: store.app
     }

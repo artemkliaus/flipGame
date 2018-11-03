@@ -36,6 +36,8 @@ export const fieldReducer = ( state = initialState, action = {}) => {
             return {...state, cardsList: action.payload};
         case 'SET_FOUND_CARDS':
             return {...state, foundCards: action.payload};
+        case 'SET_PREV_CARD':
+            return {...state, prevCard: action.payload};
         default:
             return state;
     }

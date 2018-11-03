@@ -1,30 +1,17 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import '../styles/Field.sass';
 import { connect } from 'react-redux';
-import { setMoves, setDisplayMoves, setCardsList, setFoundCards } from '../actions/FieldActions';
+import { setMoves, setDisplayMoves, setCardsList, setFoundCards, setPrevCard } from '../actions/FieldActions';
 
 //Components
 import Card from '../components/Card';
 import Counter from '../components/Counter';
 
-//Images
-import artuhov from '../img/s_artuhov.jpeg';
-import azarov from '../img/s_azarov.jpeg';
-import burkov from '../img/s_burkov.jpeg';
-import civilev from '../img/s_civilev.jpeg';
-import moor from '../img/s_moor.jpeg';
-import nikitin from '../img/s_nikitin.jpeg';
-import nikolaev from '../img/s_nikolaev.jpeg';
-import nosov from '../img/s_nosov.jpeg';
-
-
 class Field extends Component {
 
     constructor(props) {
-        super(props)
-        this.state = {
-            prevCard: null,
-        }
+        super();
 
         this.styles = {
             hideCard: 'card_hide',
@@ -32,27 +19,32 @@ class Field extends Component {
         }
     }
 
+    static propTypes = {
+        showResult: PropTypes.func
+    }
+
     clickHandler (e) {
-        const moves = this.props.field.moves;
+        const { moves } = this.props.field;
         const card = e.currentTarget;
-        let success;
+        let success
+        let displayMoves;
 
         const isAllowUpdate = this.checkForUpdateMoves(card);
 
         if (isAllowUpdate) {
-            this.updateMoves(moves);
+            displayMoves = this.updateMoves(moves);
             this.setActiveCard(card);
             success = this.checkCouple(card);
         }
 
         if (success) {
             this.hideCards(card);
-            this.foundCards();
+            this.foundCards(displayMoves);
         }
     }
 
     updateMoves (moves) {
-        let displayMoves = this.props.field.displayMoves;
+        let { displayMoves } = this.props.field;
         moves += 1;
 
         this.props.setMoves(moves);
@@ -61,36 +53,37 @@ class Field extends Component {
             displayMoves += 1;
             this.props.setDisplayMoves(displayMoves);
         }
+
+        return displayMoves;
     }
 
     checkForUpdateMoves (card) {
-        const prevCard = this.state.prevCard;
+        let { prevCard } = this.props.field;
         return (!prevCard || prevCard.id !== card.id) ? true : false;
     }
 
     checkCouple (card) {
-        const prevActiveCard = this.state.prevCard;
-        return ( prevActiveCard && prevActiveCard.id[0] === card.id[0] ) ? true : false;
+        let { prevCard } = this.props.field;
+        return ( prevCard && prevCard.id[0] === card.id[0] ) ? true : false;
     }
 
     hideCards (card) {
-        const prevActiveCard = this.state.prevCard;
-        const hideCard = this.styles.hideCard;
+        let { prevCard } = this.props.field;
+        let { hideCard } = this.styles;
         card.classList.add(hideCard);
-        prevActiveCard.classList.add(hideCard);
+        prevCard.classList.add(hideCard);
         return true;
     }
 
-    foundCards () {
+    foundCards (displayMoves) {
         let { foundCards } = this.props.field;
         foundCards += 1;
         this.props.setFoundCards(foundCards);
-        this.checkEndGame(foundCards);
+        this.checkEndGame(foundCards, displayMoves);
         return foundCards;
     }
 
-    checkEndGame (foundCards) {
-        const { displayMoves } = this.props.field;
+    checkEndGame (foundCards, displayMoves) {
         if (foundCards === 8) {
             this.showPopup(displayMoves);
             return true;
@@ -103,22 +96,20 @@ class Field extends Component {
     }
 
     setActiveCard (card) {
-        const prevActiveCard = this.state.prevCard;
-        const activeCard = this.styles.activeCard;
+        let { prevCard } = this.props.field;
+        let { activeCard } = this.styles;
 
-        if (prevActiveCard) {
-            prevActiveCard.classList.remove(activeCard);
+        if (prevCard) {
+            prevCard.classList.remove(activeCard);
         }
 
         card.classList.add(activeCard);
 
-        this.setState({
-            prevCard: card
-        })
+        this.props.setPrevCard(card);
     }
 
     prepareCard (card, num) {
-        const key = card.id + '' + num;
+        let key = card.id + '' + num;
         return (
             <Card key={key} id={key} card={card.src} onClick={this.clickHandler.bind(this)}></Card>
         )
@@ -134,14 +125,15 @@ class Field extends Component {
         const cardsListSecondPart = this.props.field.cardSymbols.map(card => this.prepareCard(card, 1));
         const cardsList = [...cardsListFirstPart, ...cardsListSecondPart].sort(this.randomazeArr);
 
-        this.props.setCardsList(cardsList)
+        this.props.setCardsList(cardsList);
     }
 
     render () {
+        const { displayMoves, cardsList } = this.props.field;
         return (
             <div className='field'>
-                <Counter moves={this.props.field.displayMoves}/>
-                {this.props.field.cardsList}
+                <Counter moves={displayMoves}/>
+                {cardsList}
             </div>
         );
     }
@@ -158,7 +150,8 @@ const mapDispatchToProps = dispatch => {
         setMoves: moves => dispatch(setMoves(moves)),
         setDisplayMoves: displayMoves => dispatch(setDisplayMoves(displayMoves)),
         setCardsList: cardsList => dispatch(setCardsList(cardsList)),
-        setFoundCards: foundCards => dispatch(setFoundCards(foundCards))
+        setFoundCards: foundCards => dispatch(setFoundCards(foundCards)),
+        setPrevCard: card => dispatch(setPrevCard(card))
     }
 };
 

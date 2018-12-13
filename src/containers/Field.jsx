@@ -17,10 +17,17 @@ class Field extends Component {
             hideCard: 'card_hide',
             activeCard: 'card_active'
         }
+
+        const cardsListFirstPart = props.field.cardSymbols.map(card => this.prepareCard(card, 0));
+        const cardsListSecondPart = props.field.cardSymbols.map(card => this.prepareCard(card, 1));
+        const cardsList = [...cardsListFirstPart, ...cardsListSecondPart].sort(this.randomazeArr);
+
+        props.setCardsList(cardsList);
     }
 
     static propTypes = {
-        showResult: PropTypes.func
+        showResult: PropTypes.func,
+        field: PropTypes.object
     }
 
     clickHandler (e) {
@@ -97,13 +104,12 @@ class Field extends Component {
 
     setActiveCard (card) {
         let { prevCard } = this.props.field;
-        let { activeCard } = this.styles;
 
         if (prevCard) {
-            prevCard.classList.remove(activeCard);
+            prevCard.classList.remove(this.styles.activeCard);
         }
 
-        card.classList.add(activeCard);
+        card.classList.add(this.styles.activeCard);
 
         this.props.setPrevCard(card);
     }
@@ -116,16 +122,7 @@ class Field extends Component {
     }
 
     randomazeArr () {
-        const num = parseInt(Math.random() * 10)
-        return num > 4 ? 1 : 0
-    }
-
-    componentDidMount () {
-        const cardsListFirstPart = this.props.field.cardSymbols.map(card => this.prepareCard(card, 0));
-        const cardsListSecondPart = this.props.field.cardSymbols.map(card => this.prepareCard(card, 1));
-        const cardsList = [...cardsListFirstPart, ...cardsListSecondPart].sort(this.randomazeArr);
-
-        this.props.setCardsList(cardsList);
+        return +(Math.random() * 10 > 4) ? 1 : 0
     }
 
     render () {

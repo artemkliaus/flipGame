@@ -15,8 +15,8 @@ const Popup = ({ view = 'start', popupHandler, result = null}) => {
     if (view !== 'end') {
         popupInner =
             <div className='popup__result'>
-                <button className='popup_start-button' onClick={(e) => popupHandler(e)} id='start'>Начать игру</button>
-                <button className='popup_start-button' onClick={(e) => popupHandler(e)} id='rules'>Читать правила</button>
+                <button className='popup_start-button' onClick={() => popupHandler('hide')}>Начать игру</button>
+                <button className='popup_start-button' onClick={() => popupHandler('rules')}>Читать правила</button>
                 <p className='popup_rules-text'>Поочередно переворачивая карты необходимо найти одинаковые за минимальное количество ходов</p>
             </div>;
     } else {

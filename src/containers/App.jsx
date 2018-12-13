@@ -18,16 +18,8 @@ class App extends Component {
         this.props.setPopupView('end');
     }
 
-    popupHandler (e) {
-        const button = e.target.id;
-
-        if (button === 'start') {
-            this.props.setPopupView('hide')
-        }
-
-        if (button === 'rules') {
-            this.props.setPopupView('rules')
-        }
+    popupHandler (acton) {
+        this.props.setPopupView(acton);
     }
 
     render() {
